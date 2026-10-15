@@ -1,0 +1,19 @@
+# Ambiente Virtual
+.venv/
+venv/
+
+# Arquivos de compilação e pacotes do dbt
+target/
+dbt_packages/
+dbt_modules/
+logs/
+
+# Banco de dados local e temporários
+*.duckdb
+*.duckdb.wal
+*.tmp
+*.csv
+
+# Editores / VS Code
+.vscode/
+.DS_Store

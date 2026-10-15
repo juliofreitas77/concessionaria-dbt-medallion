@@ -1,0 +1,110 @@
+version: 2
+
+models:
+  - name: bronze_estados
+    description: >
+      Cópia da tabela `estados` da origem (materializada como table a cada
+      dbt run, via ATTACH ao Postgres). Sem regras de negócio.
+    columns:
+      - name: id_estados
+        tests:
+          - unique:
+              config:
+                severity: warn
+          - not_null:
+              config:
+                severity: error
+                warn_if: ">0"
+                error_if: "> 10"
+
+  - name: bronze_cidades
+    description: Cópia da tabela `cidades` da origem.
+    columns:
+      - name: id_cidades
+        tests: [unique, not_null]
+      - name: id_estados
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_estados')
+              field: id_estados
+
+  - name: bronze_concessionarias
+    description: Cópia da tabela `concessionarias` da origem.
+    columns:
+      - name: id_concessionarias
+        tests: [unique, not_null]
+      - name: id_cidades
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_cidades')
+              field: id_cidades
+
+  - name: bronze_clientes
+    description: Cópia da tabela `clientes` da origem.
+    columns:
+      - name: id_clientes
+        tests: [unique, not_null]
+      - name: id_concessionarias
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_concessionarias')
+              field: id_concessionarias
+              
+  - name: bronze_vendedores
+    description: Cópia da tabela `vendedores` da origem.
+    columns:
+      - name: id_vendedores
+        tests: [unique, not_null]
+      - name: id_concessionarias
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_concessionarias')
+              field: id_concessionarias
+
+  - name: bronze_veiculos
+    description: Cópia da tabela `veiculos` da origem.
+    columns:
+      - name: id_veiculos
+        tests: [unique, not_null]
+      - name: valor
+        tests:
+          - not_null
+          - positive_value
+
+  - name: bronze_vendas
+    description: Cópia da tabela `vendas` da origem.
+    columns:
+      - name: id_vendas
+        tests: [unique, not_null]
+      - name: id_veiculos
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_veiculos')
+              field: id_veiculos
+      - name: id_concessionarias
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_concessionarias')
+              field: id_concessionarias
+      - name: id_vendedores
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_vendedores')
+              field: id_vendedores
+      - name: id_clientes
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_clientes')
+              field: id_clientes
+      - name: valor_pago
+        tests:
+          - not_null
+          - positive_value

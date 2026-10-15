@@ -1,0 +1,68 @@
+version: 2
+seeds:
+  - name: seed_regioes_estados
+    description: "Referencia dos estados com a regiao oficial"
+    columns:
+      - name: sigla
+        description: "Sigla do estado"
+        tests: [
+          not_null,
+          unique
+        ]
+      - name: estado
+        description: "Nome do Estado"
+        tests: [
+          not_null
+        ]
+      - name: regiao
+        description: "Região a qual o estado pertence"
+        tests:
+          - not_null
+          - accepted_values: 
+              values: ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"]
+      - name: ordem_regiao
+        description: "Ordem da região"
+        tests:
+          - not_null
+
+  - name: seed_segmentos_veiculos
+    description: "Faixa de valor para classificação de veículos."
+    columns:
+      - name: segmento
+        description: "Segmento do veículo"
+        tests: [
+          not_null,
+          unique
+        ]
+      - name: valor_minimo
+        description: "Valor mínimo do segmento"
+        tests: [
+          not_null
+        ]
+      - name: valor_maximo
+        description: "Null representa limite superior."
+        tests: [
+          unique
+        ]          
+      - name: ordem_segmento 
+        description: "Ordem do segmento"
+        tests: [
+          unique,
+          not_null
+        ]
+  - name: seed_tipos_veiculos
+    description: "Mapear variação nas categorias dos veiculos."
+    columns:
+      - name: tipo_origem
+        tests: [
+          not_null,
+          unique
+        ]
+      - name: tipo_padronizado
+        tests: [
+          not_null
+        ]
+      - name: categoria
+        tests: [
+          not_null
+        ]
